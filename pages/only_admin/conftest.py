@@ -9,8 +9,11 @@ class Locators:
     EMAIL_INPUT = (By.CSS_SELECTOR, "input[type='email']")
     PASSWORD_INPUT = (By.CSS_SELECTOR, "input[type='password']")
     SUBMIT_BUTTON = (By.CSS_SELECTOR, "button[type='submit']")
+
     SETTINGS_BUTTON = (By.XPATH, "//button[.//span[contains(., 'Настройки')]]")
     MODAL_WINDOW = (By.CLASS_NAME, "ChangeSettings__settingsModal--vZGFs")
+    CLOSE_MODAL_BUTTON = (By.XPATH, "//div[contains(@class, 'ChangeSettings__topSideChangeSettings')]//*[local-name()='svg']")
+
     INTEREST_RATE_INPUT = (By.XPATH,
                            "//div[contains(@class, 'Input__nameContainer--pbmVy') and .//div[normalize-space(text())='Процентная ставка']]" +
                            "/following-sibling::div//div[contains(@class, 'Input__inputContainer--W5lcg')]//input[@type='text']")
@@ -28,7 +31,10 @@ class Locators:
     SAVE_BUTTON = (By.CSS_SELECTOR, ".ChangeSettings__settingsSaveBtn--VCdG4")
     SAVED_INDICATOR = (By.CSS_SELECTOR,".ChangeSettings__settingsSaveBtn--VCdG4.ChangeSettings__saved--XZlZA")
 
-    CLOSE_MODAL_BUTTON = (By.XPATH, "//div[contains(@class, 'ChangeSettings__topSideChangeSettings')]//*[local-name()='svg']")
+
+    FINANCE_BUTTON = (By.XPATH, "//div[text()='Финансы']")
+    INVOICE_APPROVE_BUTTON = (By.XPATH, "//div[contains(@class, 'ModalTabs__modalTabText') and text()='Согласование счета']")
+
 
 @pytest.fixture(scope="module")
 def driver():
@@ -44,10 +50,10 @@ def auth(driver):
     """Фикстура только для авторизации"""
     driver.get("http://mice.dsm.dev.thehead.ru/auth")
     email_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located(Locators.EMAIL_INPUT))
-    email_input.send_keys("admin@gmail.com")
+    email_input.send_keys("auto_admin@gmail.com")
 
     password_input = driver.find_element(*Locators.PASSWORD_INPUT)
-    password_input.send_keys("123456789")
+    password_input.send_keys("z1crjhjcnm")
 
     submit_button = driver.find_element(*Locators.SUBMIT_BUTTON)
     submit_button.click()
@@ -64,3 +70,27 @@ def settings_modal(auth):
 
     modal = WebDriverWait(auth, 15).until(EC.visibility_of_element_located(Locators.MODAL_WINDOW))
     return modal
+
+@pytest.fixture(scope="module")
+def finance_section(auth):
+    """Фикстура для перехода в раздел Финансы и Согласование счета"""
+    browser = auth
+
+    # Находим внутри него элемент с текстом "Финансы"
+    finance_link = WebDriverWait(auth, 15).until(EC.visibility_of_element_located(Locators.FINANCE_BUTTON))
+
+    # Кликаем по нему
+    finance_link.click()
+
+    # Проверяем что перешли на страницу документов
+    WebDriverWait(browser, 15).until(EC.url_contains("/finance/documents"))
+
+    # Переходим непосредственно на страницу согласования счетов
+    invoice_approve_link = WebDriverWait(auth, 15).until(EC.visibility_of_element_located(Locators.INVOICE_APPROVE_BUTTON))
+    invoice_approve_link.click()
+
+    # Проверяем что страница загрузилась
+    WebDriverWait(browser, 15).until(
+        EC.url_contains("/invoice-approve"))
+
+    return browser

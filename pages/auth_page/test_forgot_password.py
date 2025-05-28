@@ -32,7 +32,7 @@ def test_password_recovery_flow(browser):
         EC.visibility_of_element_located((By.ID, "email"))
     )
     email_field.clear()
-    email_field.send_keys("admin@gmail.com")
+    email_field.send_keys("auto_admin@gmail.com")
 
     submit_btn = WebDriverWait(browser, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']"))

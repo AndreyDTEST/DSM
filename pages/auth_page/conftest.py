@@ -12,32 +12,38 @@ class Locators:
 @pytest.fixture(params=[
     {
         "role": "Менеджер DSM",
-        "email": "manager@gmail.com",
-        "password": "123456789",
+        "email": "auto_manager@gmail.com",
+        "password": "z1crjhjcnm",
 
     },
     {
         "role": "Руководитель DSM",
-        "email": "r@gmail.com",
-        "password": "123456789",
+            "email": "auto_ruk@gmail.com",
+        "password": "z1crjhjcnm",
 
     },
     {
         "role": "Администратор DSM",
-        "email": "admin@gmail.com",
-        "password": "123456789",
+        "email": "auto_admin@gmail.com",
+        "password": "z1crjhjcnm",
 
     },
     {
         "role": "Руководитель клиента",
-        "email": "ruk@gmail.com",
-        "password": "123456789",
+        "email": "auto_ruk_cli@gmail.com",
+        "password": "z1crjhjcnm",
 
     },
     {
         "role": "Директор клиента",
-        "email": "dir@gmail.com",
-        "password": "123456789",
+        "email": "auto_dir_cli@gmail.com",
+        "password": "z1crjhjcnm",
+
+    },
+{
+        "role": "Директор клиента",
+        "email": "auto_employee_cli@gmail.com",
+        "password": "z1crjhjcnm",
 
     }
 ])

@@ -1,3 +1,5 @@
+import time
+
 import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -34,6 +36,7 @@ def test_successful_login(browser, auth_data):
     assert WebDriverWait(browser, 10).until(
         EC.url_to_be("http://mice.dsm.dev.thehead.ru/")
     ), f"Не произошёл переход на главную страницу. Текущий URL: {browser.current_url}"
+    time.sleep(1)
 
 
 def test_invalid_login(browser, invalid_credentials):
