@@ -25,8 +25,9 @@ class Locators:
     TENDER_APPLICATION = (By.XPATH, "//span[contains(., 'Заявка на тендер')]")
     PROJECT_DSM = (By.XPATH, "//span[contains(., 'Проект DSM')]")
     CREATE_BUTTON = (By.XPATH, "//button[.//div[text()='Создать заявку']]")
+    FIRST_OPTION = (By.XPATH, "(//div[contains(@class, 'react-select__option')])[1]")
 
-class NewBidLocators:
+class Customer:
     COMPANY_FIELD = (By.XPATH, """
     //div[contains(@class, 'Input__nameContainer')][.//div[text()='Компания']]
     /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
@@ -37,7 +38,6 @@ class NewBidLocators:
     /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
     """)
     PHONE = (By.ID, "phoneNumber")
-    FIRST_OPTION = (By.XPATH, "(//div[contains(@class, 'react-select__option')])[1]")
     COMPANY_CLEAR_INDICATOR = (By.XPATH, """
         //div[contains(@class, 'Input__nameContainer')][.//div[text()='Компания']]
         /following-sibling::div//div[contains(@class, 'react-select__indicators')]//div[contains(@class, 'react-select__clear-indicator')]
@@ -65,6 +65,7 @@ class ManagerDSM:
     /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
     """)
     ADD_MANAGER_BUTTON = (By.XPATH, "//button[.//div[text()='Добавить менеджера']]")
+
 class DeleteManagerDSM:
     DELETE_MANAGER_2_BUTTON = (By.XPATH, """
     //div[contains(text(), 'Менеджер DSM 2')]/ancestor::div[contains(@class, 'Input__nameContainer')]
@@ -103,7 +104,24 @@ class ManagerClear:
         //div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 5']]
         /following-sibling::div//div[contains(@class, 'react-select__indicators')]//div[contains(@class, 'react-select__clear-indicator')]
         """)
-
+class Event:
+    NAME_FIELD = (By.XPATH,
+                           "//div[contains(@class, 'Input__nameContainer--pbmVy') and .//div[normalize-space(text())='Наименование']]" +
+                           "/following-sibling::div//div[contains(@class, 'Input__inputContainer--W5lcg')]//input[@type='text']")
+    TYPE_FIELD = (By.XPATH, """
+                            //div[contains(@class, 'Input__nameContainer')][.//div[text()='Тип мероприятия']]
+                            /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
+                            """)
+    PLAN_QUANTITY_FIELD = (By.XPATH,
+                           "//div[contains(@class, 'Input__nameContainer--pbmVy') and .//div[normalize-space(text())='Кол-во чел. план']]" +
+                           "/following-sibling::div//div[contains(@class, 'Input__inputContainer--W5lcg')]//input[@type='text']")
+    FACT_QUANTITY_FIELD = (By.XPATH,
+                           "//div[contains(@class, 'Input__nameContainer--pbmVy') and .//div[normalize-space(text())='Кол-во чел. факт']]" +
+                           "/following-sibling::div//div[contains(@class, 'Input__inputContainer--W5lcg')]//input[@type='text']")
+    EVENT_CLEAR_INDICATOR = (By.XPATH, """
+        //div[contains(@class, 'Input__nameContainer')][.//div[text()='Тип мероприятия']]
+        /following-sibling::div//div[contains(@class, 'react-select__indicators')]//div[contains(@class, 'react-select__clear-indicator')]
+        """)
 
 
 @pytest.fixture(scope="function")

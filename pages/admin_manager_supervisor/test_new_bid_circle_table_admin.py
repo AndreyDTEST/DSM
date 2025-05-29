@@ -2,10 +2,11 @@ import time
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from conftest import Locators
-from conftest import NewBidLocators
+from conftest import Customer
 from conftest import ManagerDSM
 from conftest import DeleteManagerDSM
 from conftest import ManagerClear
+from conftest import Event
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 
@@ -23,38 +24,40 @@ def test_create_request(auth, auth_data):
         EC.element_to_be_clickable(Locators.CREATE_NEW_BID_BUTTON))
     create_btn.click()
 
+
     # Радио-баттон "Круглый стол"
     circle_table = WebDriverWait(browser, 5).until(
         EC.element_to_be_clickable(Locators.CIRCLE_TABLE))
     circle_table.click()
 
+
     # Кнопка "Создать заявку внутри модального окна"
     create_btn = WebDriverWait(browser, 5).until(
         EC.element_to_be_clickable(Locators.CREATE_BUTTON))
     create_btn.click()
-    time.sleep(0.3)
 
     def select_company(browser, company_name="AUTO", clear_after=False):
         # Ищем блок "Компания"
         company_field = WebDriverWait(browser, 5).until(
-            EC.element_to_be_clickable(NewBidLocators.COMPANY_FIELD)
+            EC.presence_of_element_located(Customer.COMPANY_FIELD)
         )
         company_field.send_keys(company_name)
         company_field.click()
+        time.sleep(0.3)
 
         # Выбираем первый вариант
         first_option = WebDriverWait(browser, 5).until(
-            EC.element_to_be_clickable(NewBidLocators.FIRST_OPTION)
+            EC.element_to_be_clickable(Locators.FIRST_OPTION)
         )
         first_option.click()
         time.sleep(0.3)
 
         if clear_after:
             company_clear = WebDriverWait(browser, 5).until(
-                EC.element_to_be_clickable(NewBidLocators.COMPANY_CLEAR_INDICATOR)
+                EC.element_to_be_clickable(Customer.COMPANY_CLEAR_INDICATOR)
             )
             company_clear.click()
-            time.sleep(0.3)
+            time.sleep(0.2)
 
     # Первый сценарий: выбрать и очистить
     select_company(browser, "AUTO", clear_after=True)
@@ -63,15 +66,17 @@ def test_create_request(auth, auth_data):
     select_company(browser, "AUTO")
 
     # Находим поле ввода внутри
-    author_field = WebDriverWait(browser, 5).until(EC.presence_of_element_located(NewBidLocators.AUTHOR_FIELD))
+    author_field = WebDriverWait(browser, 5).until(EC.presence_of_element_located(Customer.AUTHOR_FIELD))
     author_field.send_keys("AUTO_TESTS")
     author_field.click()
+    time.sleep(0.2)
 
     # Кликаем на селект "Телефон", чтобы открыть поле ввода
     phone_number = WebDriverWait(browser, 5).until(
-        EC.element_to_be_clickable(NewBidLocators.PHONE))
+        EC.element_to_be_clickable(Customer.PHONE))
     phone_number.click()
     phone_number.send_keys("1234567890")
+    time.sleep(0.2)
 
 
     # Проверка/заполнение поля
@@ -95,7 +100,7 @@ def test_create_request(auth, auth_data):
         time.sleep(0.1)
 
         # Выбираем первый вариант из выпадающего списка "Менеджер DSM"
-        manager_first_option = WebDriverWait(browser, 5).until(EC.element_to_be_clickable(NewBidLocators.FIRST_OPTION))
+        manager_first_option = WebDriverWait(browser, 5).until(EC.element_to_be_clickable(Locators.FIRST_OPTION))
         manager_first_option.click()
         time.sleep(0.1)
 
@@ -104,6 +109,7 @@ def test_create_request(auth, auth_data):
         add_manager = WebDriverWait(browser, 5).until(
             EC.element_to_be_clickable(ManagerDSM.ADD_MANAGER_BUTTON))
         add_manager.click()
+        time.sleep(0.1)
 
     # Список локаторов и соответствующих названий
     managers = [
@@ -122,21 +128,74 @@ def test_create_request(auth, auth_data):
         time.sleep(0.1)
 
         # Ждем появления варианта и выбираем его
-        first_option_2 = WebDriverWait(browser, 5).until(EC.element_to_be_clickable(NewBidLocators.FIRST_OPTION))
+        first_option_2 = WebDriverWait(browser, 5).until(EC.element_to_be_clickable(Locators.FIRST_OPTION))
         first_option_2.click()
         time.sleep(0.1)
 
-    # Удаление вообще всех менеджеров
-    for _ in range(4):
-            del_button = WebDriverWait(browser, 5).until(
-                EC.element_to_be_clickable(DeleteManagerDSM.DELETE_MANAGER_2_BUTTON))
-            del_button.click()
-            time.sleep(0.1)
+    manager_numbers = [4, 2, 3, 2]
 
-    manager_clear = WebDriverWait(browser, 5).until(
-                EC.element_to_be_clickable(ManagerClear.MANAGER_1_CLEAR_INDICATOR))
-    manager_clear.click()
+    for num in manager_numbers:
+        # Формируем имена локаторов динамически
+        clear_locator = getattr(ManagerClear, f"MANAGER_{num}_CLEAR_INDICATOR")
+        delete_locator = getattr(DeleteManagerDSM, f"DELETE_MANAGER_{num}_BUTTON")
+
+        # Очистка поля менеджера
+        manager_clear = WebDriverWait(browser, 5).until(
+            EC.element_to_be_clickable(clear_locator)
+        )
+        manager_clear.click()
+        time.sleep(0.1)
+
+        # Удаление менеджера
+        del_button = WebDriverWait(browser, 5).until(
+            EC.element_to_be_clickable(delete_locator)
+        )
+        del_button.click()
+        time.sleep(0.1)
+
+    name_field = WebDriverWait(browser, 5).until(EC.presence_of_element_located(Event.NAME_FIELD))
+    name_field.send_keys("AUTO_TESTS")
+    name_field.click()
+    time.sleep(0.2)
+
+    def select_company(browser, type_name="Другое", clear_after=False):
+
+        # Ищем блок "Тип мероприятия"
+        type_event_field = WebDriverWait(browser, 5).until(EC.presence_of_element_located(Event.TYPE_FIELD))
+        type_event_field.send_keys(type_name)
+        type_event_field.click()
+        time.sleep(0.1)
+
+        # Выбираем первый вариант
+        first_option = WebDriverWait(browser, 5).until(
+            EC.element_to_be_clickable(Locators.FIRST_OPTION)
+        )
+        first_option.click()
+        time.sleep(0.3)
+
+        if clear_after:
+            type_clear = WebDriverWait(browser, 5).until(
+                EC.element_to_be_clickable(Event.EVENT_CLEAR_INDICATOR)
+            )
+            type_clear.click()
+            time.sleep(0.2)
+
+    # Первый сценарий: выбрать и очистить
+    select_company(browser, "Другое", clear_after=True)
+
+    # Второй сценарий: снова выбрать
+    select_company(browser, "Другое")
+
+    plan_quantity_field = WebDriverWait(browser, 5).until(EC.presence_of_element_located(Event.PLAN_QUANTITY_FIELD))
+    plan_quantity_field.send_keys("123")
+    plan_quantity_field.click()
+    time.sleep(0.2)
+
+    fact_quantity_field = WebDriverWait(browser, 5).until(EC.presence_of_element_located(Event.FACT_QUANTITY_FIELD))
+    fact_quantity_field.send_keys("123")
+    fact_quantity_field.click()
+    time.sleep(0.2)
+
+
+
     time.sleep(2)
-
-
-
