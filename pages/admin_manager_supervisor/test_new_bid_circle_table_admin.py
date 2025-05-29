@@ -32,22 +32,35 @@ def test_create_request(auth, auth_data):
     create_btn = WebDriverWait(browser, 5).until(
         EC.element_to_be_clickable(Locators.CREATE_BUTTON))
     create_btn.click()
-
-    # Ищем блок Компания
-    company_field = WebDriverWait(browser, 5).until(
-        EC.element_to_be_clickable(NewBidLocators.COMPANY_FIELD))
-    company_field.send_keys("AUTO")
-    company_field.click()
-
-    # Выбираем первый вариант
-    company_first_option = WebDriverWait(browser, 5).until(EC.element_to_be_clickable(NewBidLocators.FIRST_OPTION))
-    company_first_option.click()
     time.sleep(0.3)
 
-    # Проверка очистки поля
-    company_clear = WebDriverWait(browser, 5).until(EC.element_to_be_clickable(NewBidLocators.COMPANY_CLEAR_INDICATOR))
-    company_clear.click()
-    time.sleep(2)
+    def select_company(browser, company_name="AUTO", clear_after=False):
+        # Ищем блок "Компания"
+        company_field = WebDriverWait(browser, 5).until(
+            EC.element_to_be_clickable(NewBidLocators.COMPANY_FIELD)
+        )
+        company_field.send_keys(company_name)
+        company_field.click()
+
+        # Выбираем первый вариант
+        first_option = WebDriverWait(browser, 5).until(
+            EC.element_to_be_clickable(NewBidLocators.FIRST_OPTION)
+        )
+        first_option.click()
+        time.sleep(0.3)
+
+        if clear_after:
+            company_clear = WebDriverWait(browser, 5).until(
+                EC.element_to_be_clickable(NewBidLocators.COMPANY_CLEAR_INDICATOR)
+            )
+            company_clear.click()
+            time.sleep(0.3)
+
+    # Первый сценарий: выбрать и очистить
+    select_company(browser, "AUTO", clear_after=True)
+
+    # Второй сценарий: снова выбрать
+    select_company(browser, "AUTO")
 
     # Находим поле ввода внутри
     author_field = WebDriverWait(browser, 5).until(EC.presence_of_element_located(NewBidLocators.AUTHOR_FIELD))
@@ -124,5 +137,6 @@ def test_create_request(auth, auth_data):
                 EC.element_to_be_clickable(ManagerClear.MANAGER_1_CLEAR_INDICATOR))
     manager_clear.click()
     time.sleep(2)
+
 
 
