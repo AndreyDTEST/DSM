@@ -27,34 +27,82 @@ class Locators:
     CREATE_BUTTON = (By.XPATH, "//button[.//div[text()='Создать заявку']]")
 
 class NewBidLocators:
-    COMPANY = (By.XPATH, """
-    //div[contains(@class, 'Input__nameContainer')][.//div[text()='Компания']]
-    /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
-    """)
     COMPANY_FIELD = (By.XPATH, """
     //div[contains(@class, 'Input__nameContainer')][.//div[text()='Компания']]
     /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
     """)
 
-    AUTHOR = (By.XPATH, """
-    //div[contains(@class, 'Input__nameContainer')][.//div[text()='Автор']]
-    /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
-    """)
     AUTHOR_FIELD = (By.XPATH, """
     //div[contains(@class, 'Input__nameContainer')][.//div[text()='Автор']]
     /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
     """)
     PHONE = (By.ID, "phoneNumber")
-    MANAGER_1 = (By.XPATH, """
-    //div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 1']]
-    /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
-    """)
+    FIRST_OPTION = (By.XPATH, "(//div[contains(@class, 'react-select__option')])[1]")
+    COMPANY_CLEAR_INDICATOR = (By.XPATH, """
+        //div[contains(@class, 'Input__nameContainer')][.//div[text()='Компания']]
+        /following-sibling::div//div[contains(@class, 'react-select__indicators')]//div[contains(@class, 'react-select__clear-indicator')]
+        """)
+
+class ManagerDSM:
     MANAGER_1_FIELD = (By.XPATH, """
     //div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 1']]
     /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
     """)
-
-
+    MANAGER_2_FIELD = (By.XPATH, """
+    //div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 2']]
+    /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
+    """)
+    MANAGER_3_FIELD = (By.XPATH, """
+    //div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 3']]
+    /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
+    """)
+    MANAGER_4_FIELD = (By.XPATH, """
+    //div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 4']]
+    /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
+    """)
+    MANAGER_5_FIELD = (By.XPATH, """
+    //div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 5']]
+    /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
+    """)
+    ADD_MANAGER_BUTTON = (By.XPATH, "//button[.//div[text()='Добавить менеджера']]")
+class DeleteManagerDSM:
+    DELETE_MANAGER_2_BUTTON = (By.XPATH, """
+    //div[contains(text(), 'Менеджер DSM 2')]/ancestor::div[contains(@class, 'Input__nameContainer')]
+    /following::button[contains(@class, 'Button')]
+    """)
+    DELETE_MANAGER_3_BUTTON = (By.XPATH, """
+    //div[contains(text(), 'Менеджер DSM 3')]/ancestor::div[contains(@class, 'Input__nameContainer')]
+    /following::button[contains(@class, 'Button')]
+    """)
+    DELETE_MANAGER_4_BUTTON = (By.XPATH, """
+    //div[contains(text(), 'Менеджер DSM 4')]/ancestor::div[contains(@class, 'Input__nameContainer')]
+    /following::button[contains(@class, 'Button')]
+    """)
+    DELETE_MANAGER_5_BUTTON = (By.XPATH, """
+    //div[contains(text(), 'Менеджер DSM 5')]/ancestor::div[contains(@class, 'Input__nameContainer')]
+    /following::button[contains(@class, 'Button')]
+    """)
+class ManagerClear:
+    MANAGER_1_CLEAR_INDICATOR = (By.XPATH, """
+        //div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 1']]
+        /following-sibling::div//div[contains(@class, 'react-select__indicators')]//div[contains(@class, 'react-select__clear-indicator')]
+        """)
+    MANAGER_2_CLEAR_INDICATOR = (By.XPATH, """
+        //div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 2']]
+        /following-sibling::div//div[contains(@class, 'react-select__indicators')]//div[contains(@class, 'react-select__clear-indicator')]
+        """)
+    MANAGER_3_CLEAR_INDICATOR = (By.XPATH, """
+        //div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 3']]
+        /following-sibling::div//div[contains(@class, 'react-select__indicators')]//div[contains(@class, 'react-select__clear-indicator')]
+        """)
+    MANAGER_4_CLEAR_INDICATOR = (By.XPATH, """
+        //div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 4']]
+        /following-sibling::div//div[contains(@class, 'react-select__indicators')]//div[contains(@class, 'react-select__clear-indicator')]
+        """)
+    MANAGER_5_CLEAR_INDICATOR = (By.XPATH, """
+        //div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 5']]
+        /following-sibling::div//div[contains(@class, 'react-select__indicators')]//div[contains(@class, 'react-select__clear-indicator')]
+        """)
 
 
 

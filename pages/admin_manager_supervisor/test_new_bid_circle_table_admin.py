@@ -3,7 +3,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from conftest import Locators
 from conftest import NewBidLocators
+from conftest import ManagerDSM
+from conftest import DeleteManagerDSM
+from conftest import ManagerClear
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
+
+
 
 def test_create_request(auth, auth_data):
     browser = auth
@@ -27,61 +33,96 @@ def test_create_request(auth, auth_data):
         EC.element_to_be_clickable(Locators.CREATE_BUTTON))
     create_btn.click()
 
-    # Кликаем на селект "Компания", чтобы открыть поле ввода
-    company = WebDriverWait(browser, 5).until(
-        EC.element_to_be_clickable(NewBidLocators.COMPANY))
-    company.click()
-
-    # Находим поле ввода внутри
-    company_field = WebDriverWait(browser, 5).until(EC.presence_of_element_located(NewBidLocators.COMPANY_FIELD))
+    # Ищем блок Компания
+    company_field = WebDriverWait(browser, 5).until(
+        EC.element_to_be_clickable(NewBidLocators.COMPANY_FIELD))
     company_field.send_keys("AUTO")
+    company_field.click()
 
     # Выбираем первый вариант
-    first_option = WebDriverWait(browser, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR,
-                                                                               "div.react-select__option")))
-    first_option.click()
-    time.sleep(0.5)
+    company_first_option = WebDriverWait(browser, 5).until(EC.element_to_be_clickable(NewBidLocators.FIRST_OPTION))
+    company_first_option.click()
+    time.sleep(0.3)
 
-    # Кликаем на селект "Автор", чтобы открыть поле ввода
-    author = WebDriverWait(browser, 5).until(
-        EC.element_to_be_clickable(NewBidLocators.AUTHOR))
-    author.click()
+    # Проверка очистки поля
+    company_clear = WebDriverWait(browser, 5).until(EC.element_to_be_clickable(NewBidLocators.COMPANY_CLEAR_INDICATOR))
+    company_clear.click()
+    time.sleep(2)
 
     # Находим поле ввода внутри
     author_field = WebDriverWait(browser, 5).until(EC.presence_of_element_located(NewBidLocators.AUTHOR_FIELD))
     author_field.send_keys("AUTO_TESTS")
-
+    author_field.click()
 
     # Кликаем на селект "Телефон", чтобы открыть поле ввода
     phone_number = WebDriverWait(browser, 5).until(
         EC.element_to_be_clickable(NewBidLocators.PHONE))
     phone_number.click()
     phone_number.send_keys("1234567890")
-    time.sleep(2)
 
-    # Проверка роли и поля "Менеджер DSM"
+
+    # Проверка/заполнение поля
     if role == "Менеджер DSM":
         try:
-            manager_input = WebDriverWait(browser, 5).until(
-                EC.presence_of_element_located((
-                    By.XPATH,
-                    "//div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 1']]"
-                    "/following-sibling::div//div[contains(@class, 'react-select__input-container')]//input"
-                ))
-            )
-            value = manager_input.get_attribute('value')
-            if value == "Auto_manager":
-                print("Поле менеджера заполнено правильно")
-            else:
-                print(f"Поле менеджера содержит {value}. Переделываем нахуй! ")
-        except Exception as e:
-            print("Не удалось найти или проверить поле менеджера:", e)
+            selected_value = WebDriverWait(browser, 10).until(
+                EC.visibility_of_element_located((By.XPATH, """
+            //div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 1']]
+            /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
+            """)))
+            print("Поле менеджера заполнено правильно")
+        except TimeoutException:
+            print("Не найдено значение 'Auto_manager' в поле менеджера")
     else:
         # Кликаем на селект "Менеджер DSM 1", чтобы открыть поле ввода
-        manager = WebDriverWait(browser, 5).until(
-            EC.element_to_be_clickable(NewBidLocators.MANAGER_1))
-        manager.click()
 
-        manager_field = WebDriverWait(browser, 5).until(EC.presence_of_element_located(NewBidLocators.MANAGER_1_FIELD))
+        manager_field = (WebDriverWait(browser, 5).until
+                        (EC.presence_of_element_located(ManagerDSM.MANAGER_1_FIELD)))
         manager_field.send_keys("Auto_manager")
-        time.sleep(2)
+        manager_field.click()
+        time.sleep(0.1)
+
+        # Выбираем первый вариант из выпадающего списка "Менеджер DSM"
+        manager_first_option = WebDriverWait(browser, 5).until(EC.element_to_be_clickable(NewBidLocators.FIRST_OPTION))
+        manager_first_option.click()
+        time.sleep(0.1)
+
+    # Добавление новых менеджеров
+    for _ in range(4):
+        add_manager = WebDriverWait(browser, 5).until(
+            EC.element_to_be_clickable(ManagerDSM.ADD_MANAGER_BUTTON))
+        add_manager.click()
+
+    # Список локаторов и соответствующих названий
+    managers = [
+        (ManagerDSM.MANAGER_2_FIELD, 'Auto_manager_2'),
+        (ManagerDSM.MANAGER_3_FIELD, 'Auto_manager_3'),
+        (ManagerDSM.MANAGER_4_FIELD, 'Auto_manager_4'),
+        (ManagerDSM.MANAGER_5_FIELD, 'Auto_manager_5'),
+    ]
+
+    for locator, manager_name in managers:
+        # Находим поле
+        manager_field = WebDriverWait(browser, 5).until(EC.element_to_be_clickable(locator))
+        # Вводим название менеджера
+        manager_field.send_keys(manager_name)
+        manager_field.click()
+        time.sleep(0.1)
+
+        # Ждем появления варианта и выбираем его
+        first_option_2 = WebDriverWait(browser, 5).until(EC.element_to_be_clickable(NewBidLocators.FIRST_OPTION))
+        first_option_2.click()
+        time.sleep(0.1)
+
+    # Удаление вообще всех менеджеров
+    for _ in range(4):
+            del_button = WebDriverWait(browser, 5).until(
+                EC.element_to_be_clickable(DeleteManagerDSM.DELETE_MANAGER_2_BUTTON))
+            del_button.click()
+            time.sleep(0.1)
+
+    manager_clear = WebDriverWait(browser, 5).until(
+                EC.element_to_be_clickable(ManagerClear.MANAGER_1_CLEAR_INDICATOR))
+    manager_clear.click()
+    time.sleep(2)
+
+
