@@ -18,6 +18,7 @@ class Locators:
     CLOSE_MODAL_BUTTON = (By.XPATH, "//button[contains(@class, 'Button__mediumSizeButton')]//div[text()='Закрыть']/..")
 
 
+
 @pytest.fixture(params=[
     {
         "role": "Менеджер DSM",

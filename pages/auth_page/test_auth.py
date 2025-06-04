@@ -13,6 +13,7 @@ def browser():
     yield driver
     driver.quit()
 
+
 @allure.feature("Авторизация")
 @allure.story("Успешная авторизация")
 def test_successful_login(browser, auth_data):

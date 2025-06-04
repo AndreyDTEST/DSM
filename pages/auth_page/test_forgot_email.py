@@ -13,6 +13,7 @@ def browser():
     yield driver
     driver.quit()
 
+
 @allure.feature("Не помню e-mail")
 @allure.story("Успешная отправка формы восстановления")
 def test_password_recovery_flow(browser):
