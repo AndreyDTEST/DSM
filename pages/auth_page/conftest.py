@@ -5,6 +5,18 @@ class Locators:
     EMAIL_FIELD = (By.ID, "email")
     PASSWORD_FIELD = (By.CSS_SELECTOR, "input[type='password']")
     LOGIN_BUTTON = (By.CSS_SELECTOR, "button[type='submit']")
+    REQUIRED_MASSAGE = (By.XPATH, "//div[text()='Обязательное поле']")
+    INVALID_EMAIL_MASSAGE = (By.XPATH, "//div[text()='Введите корректный e-mail']")
+    INVALID_MASSAGE = (By.XPATH, "//div[text()='Неверные логин или пароль']")
+    FORGOT_PASSWORD_BUTTON = (By.LINK_TEXT, "Забыли пароль?")
+    FORGOT_EMAIL_BUTTON = (By.LINK_TEXT, "Не помню e-mail")
+    PHONE_FIELD = (By.ID, "phoneNumber")
+    COMPANY_FIELD = (By.XPATH, "//div[contains(@class, 'organizationName')]//input[@type='text']")
+    FIO_FIELD = (By.XPATH, "//div[contains(@class, 'fullName')]//input[@type='text']")
+    CHECK_BOX = (By.CLASS_NAME, "Checkbox__iconContainer--pbmVy")
+    MODAL_WINDOW = (By.ID, "modal-container-id")
+    CLOSE_MODAL_BUTTON = (By.XPATH, "//button[contains(@class, 'Button__mediumSizeButton')]//div[text()='Закрыть']/..")
+
 
 
 

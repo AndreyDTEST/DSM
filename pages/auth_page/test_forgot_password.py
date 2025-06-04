@@ -1,4 +1,6 @@
 import pytest
+import allure
+from conftest import Locators
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -11,45 +13,47 @@ def browser():
     yield driver
     driver.quit()
 
-
+@allure.feature("Не помню e-mail")
+@allure.story("Успешная отправка формы восстановления")
 def test_password_recovery_flow(browser):
     # 1. Открытие страницы авторизации
-    browser.get("http://mice.dsm.dev.thehead.ru/auth")
-    assert browser.current_url == "http://mice.dsm.dev.thehead.ru/auth", "Не удалось открыть страницу авторизации"
+    with allure.step("Открыть страницу авторизации"):
+        browser.get("http://mice.dsm.dev.thehead.ru/auth")
+        assert browser.current_url == "http://mice.dsm.dev.thehead.ru/auth", "Не удалось открыть страницу авторизации"
 
     # 2. Клик на "Забыли пароль?"
-    forgot_link = WebDriverWait(browser, 10).until(
-        EC.element_to_be_clickable((By.LINK_TEXT, "Забыли пароль?"))
-    )
-    forgot_link.click()
+    with allure.step("Открыть страницу восстановления пароля"):
+        forgot_link = WebDriverWait(browser, 10).until(
+        EC.element_to_be_clickable(Locators.FORGOT_PASSWORD_BUTTON))
+        forgot_link.click()
 
-    # Проверка перехода на страницу восстановления
-    WebDriverWait(browser, 10).until(
+    with allure.step("Проверка перехода на страницу восстановления пароля"):
+        WebDriverWait(browser, 10).until(
         EC.url_to_be("http://mice.dsm.dev.thehead.ru/auth/forgot-password"))
 
     # 3. Заполнение email и отправка формы
-    email_field = WebDriverWait(browser, 10).until(
-        EC.visibility_of_element_located((By.ID, "email"))
-    )
-    email_field.clear()
-    email_field.send_keys("auto_admin@gmail.com")
+    with allure.step("Заполнение email"):
+        email_field = WebDriverWait(browser, 10).until(
+        EC.visibility_of_element_located(Locators.EMAIL_FIELD))
+        email_field.send_keys("auto_admin@gmail.com")
 
-    submit_btn = WebDriverWait(browser, 10).until(
-        EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']"))
-    )
-    submit_btn.click()
+    with allure.step("Отправка формы"):
+        submit_btn = WebDriverWait(browser, 10).until(
+        EC.element_to_be_clickable(Locators.LOGIN_BUTTON))
+        submit_btn.click()
 
     # 4. Закрытие модального окна
-    close_btn = WebDriverWait(browser, 10).until(
-        EC.element_to_be_clickable((By.XPATH,
-                                    "//button[contains(@class, 'Button__mediumSizeButton')]//div[text()='Закрыть']/.."))
-    )
-    close_btn.click()
+    with allure.step("Закрытие модального окна"):
+        close_btn = WebDriverWait(browser, 10).until(
+        EC.element_to_be_clickable(Locators.CLOSE_MODAL_BUTTON))
+        close_btn.click()
 
     # Проверка закрытия модального окна
-    WebDriverWait(browser, 10).until(
-        EC.invisibility_of_element_located((By.ID, "modal-container-id")))
+    with allure.step("Проверка закрытия модального окна"):
+        WebDriverWait(browser, 10).until(
+        EC.invisibility_of_element_located(Locators.MODAL_WINDOW))
 
     # 5. Проверка возврата на страницу авторизации
-    assert browser.current_url == "http://mice.dsm.dev.thehead.ru/auth", \
+    with allure.step("Проверка возврата на страницу авторизации"):
+        assert browser.current_url == "http://mice.dsm.dev.thehead.ru/auth", \
         "Не произошел возврат на страницу авторизации после закрытия модального окна"
