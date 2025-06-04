@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from conftest import Locators
 
+
 @pytest.fixture
 def browser():
     driver = webdriver.Chrome()

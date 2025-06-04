@@ -87,9 +87,9 @@ def test_create_request(auth, auth_data):
             //div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 1']]
             /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
             """)))
-            print("Поле менеджера заполнено правильно")
+            print("Поле менеджера заполнено")
         except TimeoutException:
-            print("Не найдено значение 'Auto_manager' в поле менеджера")
+            print("Не найдено значение в поле менеджера")
     else:
         # Кликаем на селект "Менеджер DSM 1", чтобы открыть поле ввода
 
