@@ -24,10 +24,11 @@ class Locators:
                          "//div[contains(@class, 'Input__nameContainer--pbmVy') and .//div[normalize-space(text())='Переменная №3']]" +
                          "/following-sibling::div//div[contains(@class, 'Input__inputContainer--W5lcg')]//input[@type='text']")
     SWITCH_LOCATORS = [
-        (By.CSS_SELECTOR, "div[role='switch']"),
-        (By.CSS_SELECTOR, "div[class*='Switch']"),
-        (By.XPATH, "//div[contains(@class, 'switch')]")
+     (By.CLASS_NAME, "Switch__mediumSwitch--XRjaA Switch__checkedSwitch--l0Y2g"),
+     (By.CLASS_NAME, "Switch__mediumSwitch--XRjaA"),
+     (By.XPATH, "//div[contains(@class, 'Switch__mediumSwitch--XRjaA')]")
     ]
+
     SAVE_BUTTON = (By.CSS_SELECTOR, ".ChangeSettings__settingsSaveBtn--VCdG4")
     SAVED_INDICATOR = (By.CSS_SELECTOR,".ChangeSettings__settingsSaveBtn--VCdG4.ChangeSettings__saved--XZlZA")
 

@@ -1,4 +1,3 @@
-import time
 import allure
 from selenium.webdriver.common.keys import Keys
 import re
@@ -6,6 +5,7 @@ from conftest import Locators
 import pytest
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException
 
 
 def clear_input_field(field):
@@ -70,11 +70,8 @@ def test_interest_rate_field(settings_modal, input_value, expected_output, descr
     ("3", "abc!@#123xyz", "123", "Буквы и спецсимволы среди цифр"),
     ("3", "\xa0123\xa0456\xa0789", "123456789", "Невидимые символы внутри строки")
 ], ids=[
-    "var2_num", "var2_long", "var2_letters", "var2_spec", "var2_spaces", "var2_inner_spaces", "var2_mixed",
-    "var2_invisible",
-    "var3_num", "var3_long", "var3_letters", "var3_spec", "var3_spaces", "var3_inner_spaces", "var3_mixed",
-    "var3_invisible"
-])
+            # Идентификаторы для каждого кейса
+            ])
 def test_variable_fields(settings_modal, field_name, input_value, expected_output, description):
     """Тест полей переменных с разными значениями"""
     with allure.step(f"Проверка поля '{field_name}': {description}"):
@@ -107,47 +104,44 @@ def test_variable_fields(settings_modal, field_name, input_value, expected_outpu
             assert current_value_clean == expected_field_value, \
                 f"{description}. Ввод: '{input_value}', Ожидается: '{expected_field_value}', Получено: '{current_value}'"
 
-@allure.story("Тест переключателя")
-@pytest.mark.parametrize("initial_state, expected_changes, description", [
-    (True, 2, "Переключатель включен"),
-    (False, 2, "Переключатель выключен")
-], ids=["ON", "OFF"])
 
-def test_switch(auth, settings_modal, initial_state, expected_changes, description):
-    """Тест переключателя с разными начальными состояниями"""
-    with allure.step(f"Проверка переключателя: {description}"):
-        switch = find_switch_element(auth, Locators.SWITCH_LOCATORS)
-        if switch is None:
-            with allure.step("Ошибка: переключатель не найден"):
-                auth.save_screenshot("switch_not_found.png")
-                pytest.fail("Не удалось найти элемент switch на странице")
-
-        current_state = get_switch_state(switch)
-
-        if initial_state != current_state:
-            with allure.step("Приведение к начальному состоянию"):
-                switch.click()
-                time.sleep(0.2)
-
-        states = []
-        for i in range(expected_changes):
-            with allure.step(f"Изменение состояния #{i + 1}"):
-                switch.click()
-                time.sleep(0.2)
-                states.append(get_switch_state(switch))
-
-        with allure.step("Проверка изменений состояния"):
-            assert len(set(states)) > 1, "Состояние переключателя не изменилось"
-            assert states[-1] != current_state, "Конечное состояние не соответствует ожиданиям"
-
-def find_switch_element(driver, locators):
-    for locator in locators:
-        elements = driver.find_elements(*locator)
-        if elements:
-            return elements[0]
-    return None
+def get_switch_element(driver):
+    """Находит элемент переключателя по заданным локаторам"""
+    for by, value in Locators.SWITCH_LOCATORS:
+        try:
+            element = driver.find_element(by, value)
+            return element
+        except NoSuchElementException:
+            continue
+    raise NoSuchElementException(f"Переключатель не найден по локаторам: {Locators.SWITCH_LOCATORS}")
 
 
 def get_switch_state(switch_element):
-    class_attr = switch_element.get_attribute("class")
-    return "checked" in class_attr or "active" in class_attr
+    """Определяет состояние переключателя (True - активен, False - неактивен)"""
+    classes = switch_element.get_attribute('class')
+    return 'Switch__checkedSwitch--l0Y2g' in classes
+
+
+@allure.story("Проверка переключения состояния")
+def test_switch_toggle(auth):
+    """Тест двукратного переключения с проверкой состояний"""
+    with allure.step("First found"):
+        switch = get_switch_element(auth)
+        first_state = get_switch_state(switch)
+
+    with allure.step("First click and check"):
+        switch.click()
+        WebDriverWait(auth, 10).until(
+            lambda d: get_switch_state(get_switch_element(d)) != first_state
+        )
+        second_state = get_switch_state(get_switch_element(auth))
+        assert second_state != first_state, "Состояние не изменилось после первого клика"
+
+    with allure.step("Second click and check"):
+        switch = get_switch_element(auth)  # Обновляем элемент
+        switch.click()
+        WebDriverWait(auth, 10).until(
+            lambda d: get_switch_state(get_switch_element(d)) == first_state
+        )
+        final_state = get_switch_state(get_switch_element(auth))
+        assert final_state == first_state, "Состояние не вернулось в исходное после второго клика"
