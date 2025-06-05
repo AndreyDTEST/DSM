@@ -4,7 +4,7 @@ import os
 import json
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, StaleElementReferenceException
+from selenium.common.exceptions import TimeoutException
 from conftest import Locators, Customer, ManagerDSM, DeleteManagerDSM, ManagerClear, Event, Budget, Venue
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -27,20 +27,17 @@ def safe_interaction(browser, locator, action_type, value=None, timeout=1, retri
                 WebDriverWait(browser, timeout).until(
                     EC.element_to_be_clickable(locator)).click()
             elif action_type == "send_keys":
-                element.clear()
                 element.send_keys(value)
-            elif action_type == "clear":
-                element.clear()
+
 
             time.sleep(0.05)
             return True
 
-        except StaleElementReferenceException:
+        except:
             if attempt == retries - 1:
                 raise
             time.sleep(0.3)
     return False
-
 
 def fill_select_and_clear(browser):
     """Заполняет поля type и site, выбирает первые значения, затем очищает"""
