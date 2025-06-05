@@ -139,16 +139,30 @@ class Venue:
     COUNTRY_VALUE = (By.XPATH,
     "//div[@class='react-select__single-value react-select__single-value--is-disabled css-w54w9q-singleValue']//*[normalize-space(text())='Россия']")
 
-    CITY = (By.XPATH,
-                           "//div[contains(@class, 'Input__nameContainer--pbmVy') and .//div[normalize-space(text())='Город']]" +
-                           "/following-sibling::div//div[contains(@class, 'Input__inputContainer--W5lcg')]//input[@type='text']")
-    SITE_TYPE = (By.XPATH,
-                           "//div[contains(@class, 'Input__nameContainer--pbmVy') and .//div[normalize-space(text())='Тип площадки']]" +
-                           "/following-sibling::div//div[contains(@class, 'Input__inputContainer--W5lcg')]//input[@type='text']")
-    SITE = (By.XPATH,
-                           "//div[contains(@class, 'Input__nameContainer--pbmVy') and .//div[normalize-space(text())='Площадка']]" +
-                           "/following-sibling::div//div[contains(@class, 'Input__inputContainer--W5lcg')]//input[@type='text']")
-
+    CITY = (By.XPATH, """
+            //div[contains(@class, 'Input__nameContainer')][.//div[text()='Город']]
+            /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
+            """)
+    SITE_TYPE = (By.XPATH, """
+            //div[contains(@class, 'Input__nameContainer')][.//div[text()='Тип площадки']]
+            /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
+            """)
+    SITE = (By.XPATH, """
+            //div[contains(@class, 'Input__nameContainer')][.//div[text()='Площадка']]
+            /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
+            """)
+    CITY_CLEAR_INDICATOR = (By.XPATH, """
+        //div[contains(@class, 'Input__nameContainer')][.//div[text()='Город']]
+        /following-sibling::div//div[contains(@class, 'react-select__indicators')]//div[contains(@class, 'react-select__clear-indicator')]
+        """)
+    SITE_TYPE_CLEAR_INDICATOR = (By.XPATH, """
+        //div[contains(@class, 'Input__nameContainer')][.//div[text()='Тип площадки']]
+        /following-sibling::div//div[contains(@class, 'react-select__indicators')]//div[contains(@class, 'react-select__clear-indicator')]
+        """)
+    SITE_CLEAR_INDICATOR = (By.XPATH, """
+        //div[contains(@class, 'Input__nameContainer')][.//div[text()='Площадка']]
+        /following-sibling::div//div[contains(@class, 'react-select__indicators')]//div[contains(@class, 'react-select__clear-indicator')]
+        """)
 
 
 
