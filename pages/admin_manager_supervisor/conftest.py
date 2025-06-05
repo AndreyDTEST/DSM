@@ -44,10 +44,14 @@ class Customer:
         """)
 
 class ManagerDSM:
+    MANAGER_VALUE = (By.XPATH,
+                     "//div[@class='react-select__single-value css-w54w9q-singleValue']//*[normalize-space(text())='Auto_manager']")
+
     MANAGER_1_FIELD = (By.XPATH, """
     //div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 1']]
     /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
     """)
+
     MANAGER_2_FIELD = (By.XPATH, """
     //div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 2']]
     /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
@@ -122,6 +126,32 @@ class Event:
         //div[contains(@class, 'Input__nameContainer')][.//div[text()='Тип мероприятия']]
         /following-sibling::div//div[contains(@class, 'react-select__indicators')]//div[contains(@class, 'react-select__clear-indicator')]
         """)
+
+class Budget:
+    TOTAL_BUDGET = (By.XPATH,
+                           "//div[contains(@class, 'Input__nameContainer--pbmVy') and .//div[normalize-space(text())='Итог. бюджет (без НДС) план']]" +
+                           "/following-sibling::div//div[contains(@class, 'Input__inputContainer--W5lcg')]//input[@type='text']")
+    PREPARATION = (By.XPATH,
+                           "//div[contains(@class, 'Input__nameContainer--pbmVy') and .//div[normalize-space(text())='Препарат']]" +
+                           "/following-sibling::div//div[contains(@class, 'Input__inputContainer--W5lcg')]//input[@type='text']")
+
+class Venue:
+    COUNTRY_VALUE = (By.XPATH,
+    "//div[@class='react-select__single-value react-select__single-value--is-disabled css-w54w9q-singleValue']//*[normalize-space(text())='Россия']")
+
+    CITY = (By.XPATH,
+                           "//div[contains(@class, 'Input__nameContainer--pbmVy') and .//div[normalize-space(text())='Город']]" +
+                           "/following-sibling::div//div[contains(@class, 'Input__inputContainer--W5lcg')]//input[@type='text']")
+    SITE_TYPE = (By.XPATH,
+                           "//div[contains(@class, 'Input__nameContainer--pbmVy') and .//div[normalize-space(text())='Тип площадки']]" +
+                           "/following-sibling::div//div[contains(@class, 'Input__inputContainer--W5lcg')]//input[@type='text']")
+    SITE = (By.XPATH,
+                           "//div[contains(@class, 'Input__nameContainer--pbmVy') and .//div[normalize-space(text())='Площадка']]" +
+                           "/following-sibling::div//div[contains(@class, 'Input__inputContainer--W5lcg')]//input[@type='text']")
+
+
+
+
 
 
 @pytest.fixture(scope="function")

@@ -2,14 +2,17 @@ import time
 import allure
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from conftest import Locators
 from conftest import Customer
 from conftest import ManagerDSM
 from conftest import DeleteManagerDSM
 from conftest import ManagerClear
 from conftest import Event
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
+from conftest import Budget
+from conftest import Venue
+
+
 
 
 @allure.feature("Создание заявки")
@@ -35,6 +38,7 @@ def test_create_request(auth, auth_data):
         create_btn = WebDriverWait(browser, 5).until(
             EC.element_to_be_clickable(Locators.CREATE_BUTTON))
         create_btn.click()
+    time.sleep(0.5)
 
     def select_company(browser, company_name="AUTO", clear_after=False):
         with allure.step(f"Выбираем компанию '{company_name}'"):
@@ -42,6 +46,7 @@ def test_create_request(auth, auth_data):
                 EC.presence_of_element_located(Customer.COMPANY_FIELD)
             )
             company_field.send_keys(company_name)
+            time.sleep(0.2)
             company_field.click()
             time.sleep(0.3)
 
@@ -49,7 +54,7 @@ def test_create_request(auth, auth_data):
                 EC.element_to_be_clickable(Locators.FIRST_OPTION)
             )
             first_option.click()
-            time.sleep(0.3)
+            time.sleep(0.2)
 
             if clear_after:
                 with allure.step("Очищаем поле компании"):
@@ -69,27 +74,30 @@ def test_create_request(auth, auth_data):
         author_field = WebDriverWait(browser, 5).until(
             EC.presence_of_element_located(Customer.AUTHOR_FIELD))
         author_field.send_keys("AUTO_TESTS")
-        author_field.click()
         time.sleep(0.2)
+        author_field.click()
+        time.sleep(0.3)
 
     with allure.step("Заполняем поле 'Телефон'"):
         phone_number = WebDriverWait(browser, 5).until(
             EC.element_to_be_clickable(Customer.PHONE))
         phone_number.click()
+        time.sleep(0.2)
         phone_number.send_keys("1234567890")
         time.sleep(0.2)
 
     with allure.step("Проверяем/заполняем поле 'Менеджер DSM'"):
         if role == "Менеджер DSM":
-            try:
-                selected_value = WebDriverWait(browser, 10).until(
-                    EC.visibility_of_element_located((By.XPATH, """
-                //div[contains(@class, 'Input__nameContainer')][.//div[text()='Менеджер DSM 1']]
-                /following-sibling::div//div[contains(@class, 'react-select__input-container')]//input
-                """)))
-                allure.attach("Поле менеджера заполнено автоматически", name="Manager field status")
-            except TimeoutException:
-                allure.attach("Не найдено значение в поле менеджера", name="Manager field status")
+                try:
+                    element = WebDriverWait(browser, 5).until(
+                        EC.visibility_of_element_located(ManagerDSM.MANAGER_VALUE)
+                    )
+                    allure.attach("Элемент 'Auto_manager' не найден за отведенное время", name="Результат поиска",
+                                  attachment_type=allure.attachment_type.TEXT)
+
+                except TimeoutException:
+                    allure.attach("Элемент 'Auto_manager' не найден", name="Результат поиска",
+                                  attachment_type=allure.attachment_type.TEXT)
         else:
             manager_field = (WebDriverWait(browser, 5).until
                             (EC.presence_of_element_located(ManagerDSM.MANAGER_1_FIELD)))
@@ -197,3 +205,31 @@ def test_create_request(auth, auth_data):
         fact_quantity_field.send_keys("123")
         fact_quantity_field.click()
         time.sleep(0.2)
+
+    with allure.step("Заполняем поле 'Итог. бюджет (без НДС) план'"):
+        total_budget = WebDriverWait(browser, 5).until(
+            EC.presence_of_element_located(Budget.TOTAL_BUDGET))
+        total_budget.send_keys("123")
+        total_budget.click()
+        time.sleep(0.2)
+
+    with allure.step("Заполняем поле 'Препарат'"):
+        preparation = WebDriverWait(browser, 5).until(
+            EC.presence_of_element_located(Budget.PREPARATION))
+        preparation.send_keys("123")
+        preparation.click()
+        time.sleep(0.2)
+
+
+
+    with allure.step("Заполняем поле 'Cтрана'"):
+        try:
+            element = WebDriverWait(browser, 5).until(
+                EC.visibility_of_element_located(Venue.COUNTRY_VALUE)
+            )
+            allure.attach("Элемент 'Россия' найден.", name="Результат поиска",
+                          attachment_type=allure.attachment_type.TEXT)
+
+        except TimeoutException:
+            allure.attach("Элемент 'Россия' не найден за отведенное время.", name="Результат поиска",
+                          attachment_type=allure.attachment_type.TEXT)

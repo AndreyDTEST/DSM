@@ -34,7 +34,7 @@ def clean_string(s):
     ("1000", "100", "Максимальное значение 100")
 ], ids=["50", "-10", "abc", "150", "1000"])
 def test_interest_rate_field(settings_modal, input_value, expected_output, description):
-    """Тест процентной ставки с разными значениями"""
+    """Тест процентной ставки"""
     with allure.step(f"Проверка поля 'Процентная ставка': {description}"):
         interest_input = WebDriverWait(settings_modal, 15).until(
             EC.element_to_be_clickable(Locators.INTEREST_RATE_INPUT))
@@ -106,14 +106,14 @@ def test_variable_fields(settings_modal, field_name, input_value, expected_outpu
 
 
 def get_switch_element(driver):
-    """Находит элемент переключателя по заданным локаторам"""
+    """Находит элемент переключателя"""
     for by, value in Locators.SWITCH_LOCATORS:
         try:
             element = driver.find_element(by, value)
             return element
         except NoSuchElementException:
             continue
-    raise NoSuchElementException(f"Переключатель не найден по локаторам: {Locators.SWITCH_LOCATORS}")
+    raise NoSuchElementException(f"Переключатель не найден")
 
 
 def get_switch_state(switch_element):
@@ -124,7 +124,7 @@ def get_switch_state(switch_element):
 
 @allure.story("Проверка переключения состояния")
 def test_switch_toggle(auth):
-    """Тест двукратного переключения с проверкой состояний"""
+    """Тест переключения с проверкой состояний"""
     with allure.step("First found"):
         switch = get_switch_element(auth)
         first_state = get_switch_state(switch)
@@ -138,7 +138,7 @@ def test_switch_toggle(auth):
         assert second_state != first_state, "Состояние не изменилось после первого клика"
 
     with allure.step("Second click and check"):
-        switch = get_switch_element(auth)  # Обновляем элемент
+        switch = get_switch_element(auth)
         switch.click()
         WebDriverWait(auth, 10).until(
             lambda d: get_switch_state(get_switch_element(d)) == first_state
